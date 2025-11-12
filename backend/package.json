@@ -1,0 +1,36 @@
+{
+  "name": "taiwan-celebrity-tracker-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Taiwan Celebrity Tracker - REST API for managing celebrity data, mentions, and metrics",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node scripts/seed-celebrities.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "celebrity",
+    "tracker",
+    "taiwan",
+    "scraping",
+    "express",
+    "mysql"
+  ],
+  "author": "Taiwan Celebrity Tracker Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0",
+    "dotenv": "^16.3.1",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "express-rate-limit": "^7.1.5",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
