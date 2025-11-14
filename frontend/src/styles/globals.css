@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+* {
+  @apply box-border;
+}
+
+body {
+  @apply bg-white text-light-text-primary font-body;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark {
+  @apply bg-dark-bg-primary text-dark-text-primary;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-light-bg-secondary;
+}
+
+body.dark ::-webkit-scrollbar-track {
+  @apply bg-dark-bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-light-text-secondary rounded cursor-pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-light-text-primary;
+}
+
+body.dark ::-webkit-scrollbar-thumb {
+  @apply bg-dark-text-secondary;
+}
+
+body.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-dark-text-primary;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* Slide in animation */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 0.3s ease-out;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-neon-cyan;
+}
+
+/* Button base styles */
+button {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+/* Link styles */
+a {
+  @apply text-neon-cyan hover:text-neon-magenta transition-colors duration-300;
+}
+
+body.dark a {
+  @apply text-neon-cyan;
+}

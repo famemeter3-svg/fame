@@ -1,0 +1,53 @@
+{
+  "name": "taiwan-celebrity-tracker-frontend",
+  "version": "1.0.0",
+  "description": "Dual-interface React frontend for Taiwan Celebrity Tracker - Admin dashboard and public celebrity cards with trending analytics",
+  "type": "module",
+  "main": "src/index.jsx",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src/",
+    "format": "prettier --write src/"
+  },
+  "keywords": [
+    "celebrity",
+    "tracker",
+    "taiwan",
+    "analytics",
+    "cards",
+    "trending",
+    "react",
+    "vite"
+  ],
+  "author": "Taiwan Celebrity Tracker Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "zustand": "^4.4.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.22",
+    "eslint": "^8.55.0",
+    "postcss": "^8.5.6",
+    "prettier": "^3.1.0",
+    "tailwindcss": "^4.1.17",
+    "vite": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
