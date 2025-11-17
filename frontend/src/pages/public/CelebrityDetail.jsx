@@ -199,12 +199,81 @@ export default function CelebrityDetail() {
 
         {activeTab === 'sources' && (
           <div className={`${isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'} rounded-lg p-6 border ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
-            <h3 className={`text-xl font-bold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} mb-4`}>
+            <h3 className={`text-xl font-bold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} mb-6`}>
               📊 Source Breakdown
             </h3>
-            <p className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-              Source diversity visualization coming soon
-            </p>
+            {mentions && mentions.length > 0 ? (
+              <div className="space-y-4">
+                {/* Domain Diversity Stats */}
+                {(() => {
+                  const domainCount = new Map();
+                  mentions.forEach(m => {
+                    const domain = m.domain || 'Unknown';
+                    domainCount.set(domain, (domainCount.get(domain) || 0) + 1);
+                  });
+                  const sortedDomains = Array.from(domainCount.entries())
+                    .sort((a, b) => b[1] - a[1]);
+                  const totalMentions = mentions.length;
+                  const uniqueDomains = sortedDomains.length;
+
+                  return (
+                    <>
+                      {/* Summary Stats */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div className={`p-4 rounded-lg ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'} border ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
+                          <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Total Mentions</p>
+                          <p className="text-2xl font-bold text-neon-cyan">{totalMentions}</p>
+                        </div>
+                        <div className={`p-4 rounded-lg ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'} border ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
+                          <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Unique Domains</p>
+                          <p className="text-2xl font-bold text-neon-magenta">{uniqueDomains}</p>
+                        </div>
+                        <div className={`p-4 rounded-lg ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'} border ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
+                          <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Top Source</p>
+                          <p className="text-lg font-bold text-neon-lime">{sortedDomains[0]?.[0]?.split('/')[2] || 'N/A'}</p>
+                        </div>
+                        <div className={`p-4 rounded-lg ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'} border ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
+                          <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Diversity Score</p>
+                          <p className="text-2xl font-bold text-neon-cyan">
+                            {((uniqueDomains / totalMentions) * 100).toFixed(0)}%
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Domain List */}
+                      <div className="space-y-3">
+                        <h4 className={`font-semibold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>Top Sources</h4>
+                        {sortedDomains.slice(0, 15).map(([domain, count]) => {
+                          const percentage = ((count / totalMentions) * 100).toFixed(1);
+                          return (
+                            <div key={domain} className="flex items-center gap-3">
+                              <div className="flex-1">
+                                <p className={`text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                                  {domain}
+                                </p>
+                              </div>
+                              <div className="w-32 h-2 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-gradient-to-r from-neon-cyan to-neon-magenta"
+                                  style={{ width: `${percentage}%` }}
+                                />
+                              </div>
+                              <div className={`text-right text-sm font-semibold ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                                {count} ({percentage}%)
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            ) : (
+              <p className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
+                No mentions data available
+              </p>
+            )}
           </div>
         )}
 

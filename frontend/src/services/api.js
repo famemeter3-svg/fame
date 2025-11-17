@@ -1,4 +1,5 @@
 import axios from 'axios';
+import cacheAdapter from 'axios-cache-adapter';
 import authStore from '../context/authStore.js';
 
 /**
@@ -8,14 +9,26 @@ import authStore from '../context/authStore.js';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 const API_TIMEOUT = import.meta.env.VITE_API_TIMEOUT || 10000;
+const CACHE_DURATION = parseInt(import.meta.env.VITE_CACHE_DURATION || 21600000); // 6 hours default
 
-// Create axios instance
+// Configure cache adapter
+const cache = cacheAdapter.setupCache({
+  maxAge: CACHE_DURATION, // Cache for 6 hours (21600000ms)
+  exclude: {
+    query: false,
+    // Don't cache mutations (POST, PUT, PATCH, DELETE)
+    methods: ['put', 'patch', 'delete', 'post'],
+  },
+});
+
+// Create axios instance with cache adapter
 const apiClient = axios.create({
   baseURL: API_URL,
   timeout: API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
   },
+  adapter: cache.adapter, // Use cache adapter
 });
 
 // Request interceptor to add auth token

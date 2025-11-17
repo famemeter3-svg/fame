@@ -71,7 +71,18 @@ export default function CardEmbed() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `${type}-${id || 'card'}.svg`;
+      // Generate proper filename based on card type
+      let filename = 'card.svg';
+      if (type === 'celebrity' && id) {
+        filename = `celebrity-${id}.svg`;
+      } else if (type === 'metrics' && id) {
+        filename = `metrics-${id}.svg`;
+      } else if (type === 'trending') {
+        filename = 'trending-celebrities.svg';
+      } else if (type === 'stats') {
+        filename = 'stats-overview.svg';
+      }
+      link.download = filename;
       link.click();
       URL.revokeObjectURL(url);
     }

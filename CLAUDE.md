@@ -125,16 +125,25 @@ python3 test_database_compliance.py
 python3 test_scraper_config_compliance.py
 ```
 
-### Frontend (React 18, under development)
+### Frontend (React 18 + Vite)
 ```bash
 # Install dependencies
 cd frontend && npm install
 
-# Development server (runs on http://localhost:3000)
-npm start
+# Development server (runs on http://localhost:3000 with hot reload)
+npm run dev
 
 # Production build
 npm run build
+
+# Preview production build locally
+npm run preview
+
+# Lint code with ESLint
+npm run lint
+
+# Format code with Prettier
+npm run format
 ```
 
 ### Testing & Validation
@@ -194,6 +203,11 @@ Key variables in `.env`:
 **Metrics:**
 - `METRICS_CACHE_DAYS`: Cache duration in days (default: 1 = daily recalculation)
 - `METRICS_DEFAULT_PERIOD_DAYS`: Analysis period (default: 30)
+
+**Frontend (Vite):**
+- `VITE_API_URL`: Backend API URL (default: http://localhost:5000)
+- `VITE_API_TIMEOUT`: HTTP request timeout in milliseconds (default: 10000)
+- `VITE_CACHE_DURATION`: Axios cache duration in milliseconds (default: 21600000 = 6 hours)
 
 ## Important Implementation Details
 
@@ -287,6 +301,110 @@ export default (app) => {
 - Global error handler middleware in `middleware/errorHandler.js`
 - All endpoints should use try/catch with proper error responses
 - Avoid logging sensitive data (URLs, API keys)
+
+## Frontend Code Patterns & Architecture
+
+### Frontend Module System & Structure
+- Uses ES6 modules (`import`/`export`) with Vite
+- Environment variables via `import.meta.env.VITE_*` (e.g., `VITE_API_URL`, `VITE_API_TIMEOUT`)
+- Zustand stores for state management (minimal, localStorage integrated)
+- Axios API client with automatic caching and auth token injection
+
+### Frontend File Structure
+```
+frontend/
+├── src/
+│   ├── App.jsx                  # Main router setup with all routes
+│   ├── index.jsx                # Entry point
+│   ├── components/
+│   │   ├── cards/               # Reusable card components (5 different types)
+│   │   │   ├── CelebrityCard.jsx      # Celebrity display with 3 rendering modes
+│   │   │   ├── MetricsCard.jsx        # Metrics visualization
+│   │   │   ├── StatsCard.jsx          # Statistics display
+│   │   │   ├── MentionsCard.jsx       # Recent mentions list
+│   │   │   └── TrendingCard.jsx       # Trending indicators
+│   │   ├── layouts/             # Layout wrappers
+│   │   ├── forms/               # Form components
+│   │   ├── shared/              # Shared UI elements (buttons, modals, etc.)
+│   │   └── ProtectedRoute.jsx   # Route protection wrapper for admin pages
+│   ├── pages/
+│   │   ├── Login.jsx            # Authentication page
+│   │   ├── public/              # Public pages (no auth required)
+│   │   │   ├── CelebrityList.jsx        # Main celebrity list (pagination, filters)
+│   │   │   ├── Trending.jsx             # Trending celebrities
+│   │   │   ├── CelebrityDetail.jsx      # Single celebrity detail view
+│   │   │   ├── MentionsDetail.jsx       # Celebrity mentions detail page
+│   │   │   └── CardEmbed.jsx            # Embedded card rendering (multiple modes)
+│   │   └── admin/               # Admin pages (protected by ProtectedRoute)
+│   │       ├── AdminDashboard.jsx       # Admin overview
+│   │       ├── ScrapeControl.jsx        # Trigger and monitor scraping jobs
+│   │       ├── DataManagement.jsx       # Manage celebrities and data
+│   │       └── Analytics.jsx            # Analytics and metrics view
+│   ├── services/
+│   │   └── api.js               # Centralized API client with caching & auth
+│   ├── context/                 # Zustand state stores
+│   │   ├── authStore.js         # Authentication state (token, user, login/logout)
+│   │   └── themeStore.js        # Theme state (light/dark mode)
+│   ├── hooks/                   # Custom React hooks
+│   ├── utils/                   # Utility functions
+│   ├── styles/                  # Global and Tailwind CSS configuration
+│   └── assets/                  # Images, fonts, static files
+├── vite.config.js               # Vite configuration
+├── package.json                 # Dependencies and scripts
+└── tailwind.config.js           # Tailwind CSS configuration
+```
+
+### API Client Pattern (services/api.js)
+All HTTP requests go through centralized `api.js`:
+```javascript
+// Usage in components
+import { fetchCelebrities, fetchMetrics } from '../services/api.js';
+
+const response = await fetchCelebrities(limit, offset, filters);
+// Returns axios response with:
+// - Built-in 6-hour cache (configurable)
+// - Automatic auth token injection via request interceptor
+// - 401 error handling (auto-logout on auth failure)
+// - Base URL pointing to backend (VITE_API_URL env var)
+```
+
+### State Management Pattern (Zustand)
+```javascript
+import { create } from 'zustand';
+
+const store = create((set) => ({
+  // State
+  data: [],
+  isLoading: false,
+  error: null,
+
+  // Actions
+  setData: (data) => set({ data }),
+  setError: (error) => set({ error }),
+}));
+
+// Usage in components
+const { data, setData } = store();
+```
+
+### Protected Routes
+Admin pages use `ProtectedRoute` wrapper that checks auth token in localStorage:
+```javascript
+<Route
+  path="/admin/scrape"
+  element={
+    <ProtectedRoute>
+      <ScrapeControl />
+    </ProtectedRoute>
+  }
+/>
+```
+
+### Card Rendering Modes
+Each card component supports multiple rendering modes:
+1. **React Component** - Dynamic, interactive, real-time updates
+2. **Static HTML** - Export as standalone HTML
+3. **SVG** - Vector rendering for embedding
 
 ## Code Organization Patterns
 
@@ -500,10 +618,19 @@ cd scraper && python3 test_database_compliance.py
 - Sentiment scoring is currently a placeholder - implement real ML model if needed
 - Large batch scraping takes time - use `--retries 3` for reliability
 
-### Frontend
-- Currently under active development (package.json not yet created)
-- Will communicate with backend via REST API on port 5000
-- All API calls should use relative URLs for production flexibility
+### Frontend (React 18 + Vite)
+- Uses Zustand for state management (auth, theme)
+- Axios with cache adapter for HTTP requests (6-hour default cache)
+- Vite for build tooling (port 3000, hot reload enabled)
+- Tailwind CSS v3 for styling
+- React Router v6 for navigation
+- Multiple rendering modes for cards: React components, static HTML, SVG exports
+- File structure: components/, pages/, services/, context/, styles/, utils/
+- All API calls via `services/api.js` (handles auth tokens, caching, error interception)
+- Pages organized as: public routes (/, /trending, /celebrity/:id) and admin routes (protected)
+- Auth token stored in localStorage with key `auth_token`
+- `import.meta.env` pattern for environment variables (NOT `process.env`)
+- Always run `npm run format` before committing to maintain consistent code style
 
 ## Deployment Notes
 

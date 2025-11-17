@@ -1,0 +1,204 @@
+name: Frontend Tests & Build
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/test.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'frontend/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Run ESLint
+        run: npm run lint
+        working-directory: frontend
+        continue-on-error: true
+
+      - name: Run Tests
+        run: npm run test
+        working-directory: frontend
+
+      - name: Generate Coverage Report
+        run: npm run test:coverage
+        working-directory: frontend
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./frontend/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+
+      - name: Build Production
+        run: npm run build
+        working-directory: frontend
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: build-${{ matrix.node-version }}
+          path: frontend/dist
+          retention-days: 5
+
+      - name: Check Build Size
+        run: |
+          DIST_SIZE=$(du -sh frontend/dist | cut -f1)
+          echo "Build size: $DIST_SIZE"
+
+          # Fail if build exceeds 500kb (gzipped)
+          GZIP_SIZE=$(find frontend/dist -name "*.js" -o -name "*.css" | \
+            xargs gzip -c | wc -c | \
+            awk '{printf "%.2f", $1/1024}')
+
+          echo "Gzipped size: ${GZIP_SIZE}kb"
+
+          if (( $(echo "$GZIP_SIZE > 500" | bc -l) )); then
+            echo "Error: Build size exceeds 500kb limit!"
+            exit 1
+          fi
+
+      - name: Comment PR with Test Results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const coverage = JSON.parse(fs.readFileSync('frontend/coverage/coverage-final.json', 'utf8'));
+
+            let comment = '## Test Results\n\n';
+            comment += '✅ All tests passed!\n\n';
+            comment += '### Coverage Summary\n';
+            comment += '| Metric | Value |\n';
+            comment += '|--------|-------|\n';
+
+            Object.entries(coverage).forEach(([file, data]) => {
+              if (data.coverage) {
+                comment += `| Statements | ${data.coverage.statements}% |\n`;
+              }
+            });
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Run Prettier check
+        run: npm run format -- --check
+        working-directory: frontend
+        continue-on-error: true
+
+  # Security scan job
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        working-directory: frontend
+        continue-on-error: true
+
+      - name: Check for known vulnerabilities
+        run: npm run audit-fix --dry-run
+        working-directory: frontend
+        continue-on-error: true
+
+  # Accessibility check job
+  a11y:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Run build
+        run: npm run build
+        working-directory: frontend
+
+      - name: Install axe-cli
+        run: npm install -g @axe-core/cli
+
+      - name: Check accessibility
+        run: axe frontend/dist/index.html --standard wcag2aa
+        continue-on-error: true
+
+  # Final status check
+  status:
+    needs: [test, lint, security]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check build status
+        run: |
+          if [[ "${{ needs.test.result }}" == "failure" || "${{ needs.lint.result }}" == "failure" ]]; then
+            echo "❌ Build failed"
+            exit 1
+          fi
+          echo "✅ All checks passed"
+
+      - name: Success notification
+        if: success()
+        run: echo "🎉 All frontend tests and checks passed!"

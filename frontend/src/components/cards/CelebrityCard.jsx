@@ -44,7 +44,7 @@ export default function CelebrityCard({
     return (
       <div
         onClick={() => onCardClick && onCardClick(id)}
-        className={`${bgClass} ${borderClass} border rounded-lg p-6 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-neon-cyan/30`}
+        className={`relative ${bgClass} ${borderClass} border rounded-lg p-6 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-neon-cyan/30`}
       >
         {showRanking && ranking && (
           <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-neon-cyan flex items-center justify-center font-bold text-dark-bg-primary text-sm">
@@ -95,7 +95,7 @@ export default function CelebrityCard({
   // Static Mode (non-interactive)
   if (mode === 'static') {
     return (
-      <div className={`${bgClass} ${borderClass} border rounded-lg p-6`}>
+      <div className={`relative ${bgClass} ${borderClass} border rounded-lg p-6`}>
         {showRanking && ranking && (
           <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-neon-cyan flex items-center justify-center font-bold text-dark-bg-primary text-sm">
             {ranking}
