@@ -1,0 +1,57 @@
+[
+  {
+    "celebrity_id": 1,
+    "name": "蔡依林",
+    "name_english": "Jolin Tsai",
+    "category": "Singer",
+    "status": "active",
+    "last_scraped": null,
+    "metadata": null,
+    "created_at": "2025-01-01T00:00:00Z",
+    "updated_at": "2025-01-01T00:00:00Z"
+  },
+  {
+    "celebrity_id": 2,
+    "name": "范冰冰",
+    "name_english": "Fan Bingbing",
+    "category": "Actress",
+    "status": "active",
+    "last_scraped": null,
+    "metadata": null,
+    "created_at": "2025-01-01T00:00:00Z",
+    "updated_at": "2025-01-01T00:00:00Z"
+  },
+  {
+    "celebrity_id": 3,
+    "name": "林志玲",
+    "name_english": "Chiling Lin",
+    "category": "Model",
+    "status": "active",
+    "last_scraped": null,
+    "metadata": null,
+    "created_at": "2025-01-01T00:00:00Z",
+    "updated_at": "2025-01-01T00:00:00Z"
+  },
+  {
+    "celebrity_id": 4,
+    "name": "周杰倫",
+    "name_english": "Jay Chou",
+    "category": "Singer",
+    "status": "active",
+    "last_scraped": null,
+    "metadata": null,
+    "created_at": "2025-01-01T00:00:00Z",
+    "updated_at": "2025-01-01T00:00:00Z"
+  },
+  {
+    "celebrity_id": 5,
+    "name": "劉德華",
+    "name_english": "Andy Lau",
+    "category": "Actor",
+    "status": "active",
+    "last_scraped": null,
+    "metadata": null,
+    "created_at": "2025-01-01T00:00:00Z",
+    "updated_at": "2025-01-01T00:00:00Z"
+  }
+]

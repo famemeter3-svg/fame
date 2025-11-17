@@ -1,0 +1,67 @@
+[
+  {
+    "mention_id": 1,
+    "celebrity_id": 1,
+    "cleaned_text": "Jolin Tsai is a renowned Taiwanese pop singer known for her innovative music videos and live performances",
+    "original_url": "https://en.wikipedia.org/wiki/Jolin_Tsai",
+    "domain": "wikipedia.org",
+    "content_length": 120,
+    "extraction_confidence": 0.95,
+    "sentiment_score": 0.75,
+    "keyword_tags": "[\"singer\", \"pop\", \"taiwan\", \"music\"]",
+    "processing_time_ms": 145,
+    "time_stamp": "2025-01-10 08:30:00"
+  },
+  {
+    "mention_id": 2,
+    "celebrity_id": 1,
+    "cleaned_text": "Follow Jolin Tsai on Instagram for exclusive behind-the-scenes content",
+    "original_url": "https://www.instagram.com/jolintsai",
+    "domain": "instagram.com",
+    "content_length": 75,
+    "extraction_confidence": 0.88,
+    "sentiment_score": 0.85,
+    "keyword_tags": "[\"instagram\", \"social\", \"follow\"]",
+    "processing_time_ms": 102,
+    "time_stamp": "2025-01-10 09:15:00"
+  },
+  {
+    "mention_id": 3,
+    "celebrity_id": 2,
+    "cleaned_text": "Fan Bingbing is one of the most successful Chinese actresses in Hollywood",
+    "original_url": "https://www.imdb.com/name/nm3561395/",
+    "domain": "imdb.com",
+    "content_length": 85,
+    "extraction_confidence": 0.92,
+    "sentiment_score": 0.8,
+    "keyword_tags": "[\"actress\", \"hollywood\", \"cinema\"]",
+    "processing_time_ms": 156,
+    "time_stamp": "2025-01-10 10:00:00"
+  },
+  {
+    "mention_id": 4,
+    "celebrity_id": 2,
+    "cleaned_text": "Fan Bingbing recently starred in a critically acclaimed film at Cannes Festival",
+    "original_url": "https://variety.com/article/fan-bingbing-cannes",
+    "domain": "variety.com",
+    "content_length": 92,
+    "extraction_confidence": 0.90,
+    "sentiment_score": 0.78,
+    "keyword_tags": "[\"actress\", \"cannes\", \"film\"]",
+    "processing_time_ms": 178,
+    "time_stamp": "2025-01-10 11:20:00"
+  },
+  {
+    "mention_id": 5,
+    "celebrity_id": 4,
+    "cleaned_text": "Jay Chou is a legendary Taiwanese musician with a massive global fan base",
+    "original_url": "https://en.wikipedia.org/wiki/Jay_Chou",
+    "domain": "wikipedia.org",
+    "content_length": 95,
+    "extraction_confidence": 0.94,
+    "sentiment_score": 0.82,
+    "keyword_tags": "[\"singer\", \"musician\", \"taiwan\"]",
+    "processing_time_ms": 134,
+    "time_stamp": "2025-01-10 12:30:00"
+  }
+]

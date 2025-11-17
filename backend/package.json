@@ -8,7 +8,15 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "seed": "node scripts/seed-celebrities.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:database": "jest --testNamePattern='Database Integration'",
+    "test:backend": "jest --testNamePattern='Backend API Integration'",
+    "test:e2e": "jest --testNamePattern='End-to-End'",
+    "test:performance": "jest --testNamePattern='Performance'",
+    "test:security": "jest --testNamePattern='Security'",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "keywords": [
     "celebrity",
@@ -21,15 +29,18 @@
   "author": "Taiwan Celebrity Tracker Team",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "mysql2": "^3.6.0",
-    "dotenv": "^16.3.1",
-    "helmet": "^7.1.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
-    "morgan": "^1.10.0"
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.6.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4"
+  },
   "engines": {
     "node": ">=16.0.0"
   }
